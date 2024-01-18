@@ -50,13 +50,13 @@ app.post('/UserLog-In', async (req, res) => {
         const sql = 'SELECT id, username, image_user, email, password_hash FROM users WHERE email = ? AND password_hash = ? LIMIT 1';
         const arrValores = [Email, Password];
 
-        connection.query(sql, arrValores, async (error, resultado) => {
+        connection.query(sql, arrValores, async (error, results) => {
             if (error) {
                 console.error('Query Error', error);
                 return res.status(500).json({ Error: 'Query Error' });
             }
 
-            if (resultado.length > 0) {
+            if (results.length > 0) {
                 const user = resultado[0];
                 const passwordMatch = await bcrypt.compare(Password, user.password_hash);
 
