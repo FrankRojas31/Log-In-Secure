@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios';
 import dotenv from 'dotenv';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
@@ -47,7 +46,7 @@ app.post('/UserLog-In', async (req, res) => {
     try {
         const Email = validator.escape(req.body.Email);
         const Password = validator.escape(req.body.Password);
-        const sql = 'SELECT id, username, image_user, email, password_hash FROM users WHERE email = ? AND password_hash = ? LIMIT 1';
+        const sql = 'SELECT id, username, image_user, email, password_hash FROM tb_users WHERE email = ? AND password_hash = ? LIMIT 1';
         const arrValores = [Email, Password];
 
         connection.query(sql, arrValores, async (error, results) => {
@@ -57,10 +56,7 @@ app.post('/UserLog-In', async (req, res) => {
             }
 
             if (results.length > 0) {
-                const user = resultado[0];
-                const passwordMatch = await bcrypt.compare(Password, user.password_hash);
-
-                if (passwordMatch) {
+                const user = results[0];
                     const token = jwt.sign({
                         id: user.id,
                         username: user.username,
@@ -68,10 +64,7 @@ app.post('/UserLog-In', async (req, res) => {
                     }, 'secreto');
                     console.log(`User: ${user.id} login has been successful`);
                     return res.json({ Status: 'Successful', Results: user, token });
-                } else {
-                    console.log('Login Failed due to incorrect credentials');
-                    return res.json({ Status: 'Error', Message: 'The email or password is incorrect' });
-                }
+
             } else {
                 console.log('Login Failed due to incorrect credentials');
                 return res.json({ Status: 'Error', Menssage: 'The email or password is incorrect' });

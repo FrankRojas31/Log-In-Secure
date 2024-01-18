@@ -2,9 +2,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const server = import.meta.env.Server;
+const server = import.meta.env.VITE_SERVER;
 export default function Login() {
-
     const [body, setBody] = useState ({
         Email: "",
         Password: "",
@@ -13,11 +12,14 @@ export default function Login() {
     // Creó una funcion que requiera una promesa para cumplirse.
     const handleSubmit = async () => {
         if(!body.Email || !body.Password){
+            alert("Incorrecto");
             return;
         }
 
+        console.log('Body:', body);
+
         try {
-            const respuesta = await axios.post(`${server}'/UserLog-In'`, body);
+            const respuesta = await axios.post(`${server}UserLog-In`, body);
                 if(respuesta.data.Status === 'Successful') {
                   console.log('Login User Successful ');
 
@@ -28,18 +30,22 @@ export default function Login() {
                   console.log('Error')
                 } 
         } catch (error) {
-            console.error(error);
-            console.error('Please try again later');
+            if (axios.isCancel(error)) {
+              console.log('Request canceled', error.message);
+          } else {
+              console.error(error);
+              console.error('Please try again later');
+          }
         }
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setBody({
-          ...body,
-          [name]: value,
-        });
-      };
+      const { name, value } = e.target;
+      setBody({
+        ...body,
+        [name]: value,
+      });
+    };
 
 
     return (
@@ -56,24 +62,24 @@ export default function Login() {
   
               <form className="space-y-4 md:space-y-6" action="#">
                 <div>
-                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
+                  <label htmlFor="Email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
                   <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="example@example.com"
+                    type="Email"
+                    name="Email"
+                    id="Email"
                     value={body.Email}
                     onChange={handleChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="example@example.com"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+                  <label htmlFor="Password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
                   <input
-                    type="password"
-                    name="password"
-                    id="password"
+                    type="Password"
+                    name="Password"
+                    id="Password"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     value={body.Password}
@@ -89,7 +95,6 @@ export default function Login() {
                         aria-describedby="remember"
                         type="checkbox"
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        required
                       />
                     </div>
                     <div className="ml-3 text-sm">
