@@ -52,8 +52,8 @@ app.post('/UserLog-In', async (req, res) => {
 
         connection.query(sql, arrValores, async (error, resultado) => {
             if (error) {
-                console.error('Error en la consulta:', error);
-                return res.status(500).json({ Error: 'Error en la consulta' });
+                console.error('Query Error', error);
+                return res.status(500).json({ Error: 'Query Error' });
             }
 
             if (resultado.length > 0) {
@@ -67,14 +67,14 @@ app.post('/UserLog-In', async (req, res) => {
                         images_user: user.image_user
                     }, 'secreto');
                     console.log(`User: ${user.id} login has been successful`);
-                    return res.json({ Estatus: 'Successful', Resultado: user, token });
+                    return res.json({ Status: 'Successful', Results: user, token });
                 } else {
                     console.log('Login Failed due to incorrect credentials');
-                    return res.json({ Estatus: 'Error', Mensaje: 'The email or password is incorrect' });
+                    return res.json({ Status: 'Error', Message: 'The email or password is incorrect' });
                 }
             } else {
                 console.log('Login Failed due to incorrect credentials');
-                return res.json({ Estatus: 'Error', Mensaje: 'The email or password is incorrect' });
+                return res.json({ Status: 'Error', Menssage: 'The email or password is incorrect' });
             }
         });
     } catch (err) {

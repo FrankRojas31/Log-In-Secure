@@ -1,7 +1,10 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
+const server = import.meta.env.Server;
 export default function Login() {
+
     const [body, setBody] = useState ({
         Email: "",
         Password: "",
@@ -14,10 +17,19 @@ export default function Login() {
         }
 
         try {
-            const respuesta = await axios.post(process.env.Server, body);
-                
+            const respuesta = await axios.post(`${server}'/UserLog-In'`, body);
+                if(respuesta.data.Status === 'Successful') {
+                  console.log('Login User Successful ');
+
+                  const token = respuesta.data.token;
+                  localStorage.setItem("Log-in", token);
+                  window.location.href = '/';
+                } else {
+                  console.log('Error')
+                } 
         } catch (error) {
-            
+            console.error(error);
+            console.error('Please try again later');
         }
     }
 
@@ -90,7 +102,7 @@ export default function Login() {
                 <button
                   type="submit"
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  onClick={}
+                  onClick={handleSubmit}
                 >
                   Iniciar Sesión
                 </button>

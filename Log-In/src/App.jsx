@@ -4,7 +4,7 @@ export default function App() {
   return (
       <BrowserRouter>
         <Routes>
-          <Route path="*"  element={<Page404/>}/>
+          {/*<Route path="*"  element={<Page404/>}/> */}
           <Route path="/" element={<Login/>}/>
           
         </Routes>
